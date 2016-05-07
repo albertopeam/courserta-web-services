@@ -88,14 +88,7 @@ class Race
     entrant = Entrant.new
 
     entrant.build_race(self.attributes.symbolize_keys.slice(:_id, :n, :date))
-
     entrant.build_racer(racer.info.attributes)
-
-    # entrant.first_name = racer.first_name
-    # entrant.last_name = racer.last_name
-    # entrant.gender = racer.gender
-    # entrant.birth_year = racer.birth_year
-
     entrant.group = get_group(racer)
 
     events.each do |event|
