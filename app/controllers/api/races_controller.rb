@@ -2,8 +2,10 @@ module Api
   class RacesController < ApiController
 
     def index
+      offset = params[:offset]
+      limit = params[:limit]
       if !request.accept || request.accept == "*/*"
-        render plain: "/api/races"
+        render plain: "/api/races, offset=[#{offset}], limit=[#{limit}]"
       else
         #real implementation ...
       end
