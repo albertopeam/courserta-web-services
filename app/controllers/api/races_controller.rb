@@ -21,6 +21,7 @@ module Api
     end
 
     def update
+      #Rails.logger.debug("method=#{request.method}")
       race = Race.find_by(id: params[:id])
       race.update(whitelist)
       render json: race
@@ -33,6 +34,12 @@ module Api
         race = Race.find_by(id: params[:id])
         render json: race
       end
+    end
+
+    def destroy
+      race = Race.find_by(id: params[:id])
+      race.destroy
+      render :nothing => true, :status => :no_content
     end
 
     private
