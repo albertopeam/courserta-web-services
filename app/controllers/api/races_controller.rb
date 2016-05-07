@@ -15,7 +15,8 @@ module Api
       if !request.accept || request.accept == "*/*"
         render plain: whitelist[:name], status: :ok
       else
-        #real implementation
+        race = Race.create(whitelist)
+        render plain: race.name, status: :created
       end
     end
 
@@ -29,7 +30,7 @@ module Api
 
     private
       def whitelist
-        params.require(:race).permit(:name)
+        params.require(:race).permit(:name, :date)
       end
 
   end
