@@ -1,5 +1,5 @@
 module Api
-  class ResultsController < ApplicationController
+  class ResultsController < ApiController
 
     def index
       if !request.accept || request.accept == "*/*"
