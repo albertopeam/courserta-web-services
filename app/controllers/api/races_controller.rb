@@ -20,6 +20,12 @@ module Api
       end
     end
 
+    def update
+      race = Race.find_by(id: params[:id])
+      race.update(whitelist)
+      render json: race
+    end
+
     def show
       if !request.accept || request.accept == "*/*"
         render plain: "/api/races/#{params[:id]}"
