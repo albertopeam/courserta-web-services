@@ -2,11 +2,12 @@ module Api
   class RacesController < ApiController
 
     rescue_from Mongoid::Errors::DocumentNotFound do |exception|
+      #Rails.logger.debug exception
       render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
     end
 
     rescue_from ActionView::MissingTemplate do |exception|
-      Rails.logger.debug exception
+      #Rails.logger.debug exception
       render plain: "woops: we do not support that content-type[#{request.accept}]",
              status: :unsupported_media_type
     end
@@ -23,7 +24,11 @@ module Api
 
     def create
       if !request.accept || request.accept == "*/*"
-        render plain: whitelist[:name], status: :ok
+        if has_race && has_name
+          render plain: whitelist[:name], status: :ok
+        else
+          render plain: :nothing, status: :ok
+        end
       else
         race = Race.create(whitelist)
         render plain: race.name, status: :created
@@ -39,8 +44,8 @@ module Api
 
     def show
       if !request.accept || request.accept == "*/*"
-        #render plain: "/api/races/#{params[:id]}"
-        render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
+        render plain: "/api/races/#{params[:id]}"
+        #render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
       else
         begin
           race = Race.find_by(id: params[:id])
@@ -62,6 +67,14 @@ module Api
     private
       def whitelist
         params.require(:race).permit(:name, :date)
+      end
+
+      def has_race
+        !params[:race].nil?
+      end
+
+      def has_name
+        !params[:race][:name].nil?
       end
 
   end
