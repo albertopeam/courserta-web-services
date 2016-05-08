@@ -8,7 +8,13 @@ module Api
         @race = Race.find(params[:race_id])
         @entrants = @race.entrants
         last_modified = @race.entrants.max(:updated_at)
-        fresh_when(last_modified: last_modified, public: true)
+        if_modified_since = request.headers['If-Modified-Since'] || DateTime.new
+
+        stale?(last_modified: last_modified, public: true)
+        
+        if last_modified == if_modified_since
+            render :nothing => true, :status => 304
+        end
       end
     end
 
