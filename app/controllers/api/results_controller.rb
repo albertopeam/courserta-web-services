@@ -5,7 +5,8 @@ module Api
       if !request.accept || request.accept == "*/*"
         render plain: "/api/races/#{params[:race_id]}/results"
       else
-        #real implementation ...
+        @race = Race.find(params[:race_id])
+        @entrants = @race.entrants
       end
     end
 
@@ -26,26 +27,13 @@ module Api
           entrant.swim = entrant.race.race.swim
           entrant.swim_secs = result[:swim].to_f
         end
-        #peta
         if result[:t1]
-          entrant.t1 = entrant.race.race.t1
+          entrant.t1=entrant.race.race.t1
           entrant.t1_secs = result[:t1].to_f
         end
-        if result[:bike]
-          entrant.bike = entrant.race.race.bike
-          entrant.bike_secs = result[:bike].to_f
-        end
-        #peta
-        if result[:t2]
-          entrant.t2 = entrant.race.race.t2
-          entrant.t2_secs = result[:t2].to_f
-        end
-        if result[:run]
-          entrant.run = entrant.race.race.run
-          entrant.run_secs = result[:run].to_f
-        end
-
-        entrant.save
+        saved = entrant.save
+        # puts "saved: #{saved}"
+        # puts entrant.errors.inspect
       end
       render :partial => "result", :object => entrant, status: :ok
     end
