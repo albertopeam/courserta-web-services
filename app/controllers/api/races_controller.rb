@@ -33,10 +33,17 @@ module Api
 
     def show
       if !request.accept || request.accept == "*/*"
-        render plain: "/api/races/#{params[:id]}"
+        #render plain: "/api/races/#{params[:id]}"
+        render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
       else
-        race = Race.find_by(id: params[:id])
-        render json: race
+        begin
+          race = Race.find_by(id: params[:id])
+          render race, status: :ok
+        rescue Exception
+          render :status => :not_found,
+                 :template => "api/error_msg",
+                 :locals=>{ :msg=>"woops: cannot find race[#{params[:id]}]"}
+        end
       end
     end
 
