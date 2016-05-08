@@ -7,6 +7,8 @@ module Api
       else
         @race = Race.find(params[:race_id])
         @entrants = @race.entrants
+        last_modified = @race.entrants.max(:updated_at)
+        fresh_when(last_modified: last_modified, public: true)
       end
     end
 
